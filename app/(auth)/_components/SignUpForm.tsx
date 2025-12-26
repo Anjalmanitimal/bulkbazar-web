@@ -4,11 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signupSchema, SignupSchemaType } from "../schema";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function SignUpForm() {
-  const router = useRouter();
-
   const {
     register,
     handleSubmit,
@@ -19,33 +16,54 @@ export default function SignUpForm() {
 
   const onSubmit = (data: SignupSchemaType) => {
     console.log(data);
-    router.push("/login");
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <input {...register("name")} placeholder="Name" className="input" />
-      <p className="error">{errors.name?.message}</p>
+    <>
+      <h1 className="text-3xl font-black text-center mb-8">WELCOME</h1>
 
-      <input {...register("email")} placeholder="Email" className="input" />
-      <p className="error">{errors.email?.message}</p>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div>
+          <label className="text-sm font-semibold">Name</label>
+          <input {...register("name")} className="input mt-1" />
+          <p className="error">{errors.name?.message}</p>
+        </div>
 
-      <input
-        type="password"
-        {...register("password")}
-        placeholder="Password"
-        className="input"
-      />
-      <p className="error">{errors.password?.message}</p>
+        <div>
+          <label className="text-sm font-semibold">Email</label>
+          <input {...register("email")} className="input mt-1" />
+          <p className="error">{errors.email?.message}</p>
+        </div>
 
-      <button className="btn">Register</button>
+        <div>
+          <label className="text-sm font-semibold">Password</label>
+          <input
+            type="password"
+            {...register("password")}
+            className="input mt-1"
+          />
+          <p className="error">{errors.password?.message}</p>
+        </div>
 
-      <p className="text-sm text-center">
+        <div>
+          <label className="text-sm font-semibold">SignUp As</label>
+          <select className="input mt-1">
+            <option>User</option>
+            <option>Seller</option>
+          </select>
+        </div>
+
+        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+          Register
+        </button>
+      </form>
+
+      <p className="text-sm mt-6">
         Already have an account?{" "}
         <Link href="/login" className="underline">
           Login
         </Link>
       </p>
-    </form>
+    </>
   );
 }
