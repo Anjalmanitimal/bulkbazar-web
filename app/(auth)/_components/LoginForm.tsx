@@ -3,8 +3,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginSchemaType } from "../schema";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -23,26 +23,42 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <input {...register("email")} placeholder="Email" className="input" />
-      <p className="error">{errors.email?.message}</p>
+    <>
+      <h1 className="text-3xl font-black text-center mb-8">WELCOME</h1>
 
-      <input
-        type="password"
-        {...register("password")}
-        placeholder="Password"
-        className="input"
-      />
-      <p className="error">{errors.password?.message}</p>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div>
+          <label className="text-sm font-semibold">Email</label>
+          <input
+            {...register("email")}
+            placeholder="Enter your email"
+            className="input mt-1"
+          />
+          <p className="error">{errors.email?.message}</p>
+        </div>
 
-      <button className="btn">Login</button>
+        <div>
+          <label className="text-sm font-semibold">Password</label>
+          <input
+            type="password"
+            {...register("password")}
+            placeholder="Enter your password"
+            className="input mt-1"
+          />
+          <p className="error">{errors.password?.message}</p>
+        </div>
 
-      <p className="text-sm text-center">
+        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+          Login
+        </button>
+      </form>
+
+      <p className="text-sm mt-6">
         Don’t have an account?{" "}
         <Link href="/signup" className="underline">
-          Sign up
+          Create one
         </Link>
       </p>
-    </form>
+    </>
   );
 }
