@@ -24,39 +24,55 @@ export default function LoginForm() {
 
   return (
     <>
-      <h1 className="text-3xl font-black text-center mb-8">WELCOME</h1>
+      <h1 className="text-4xl font-black text-center mb-10">WELCOME</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* Email */}
         <div>
-          <label className="text-sm font-semibold">Email</label>
+          <label className="block text-sm font-semibold mb-1">Email</label>
           <input
             {...register("email")}
             placeholder="Enter your email"
-            className="input mt-1"
+            className="input"
           />
           <p className="error">{errors.email?.message}</p>
         </div>
 
+        {/* Password */}
         <div>
-          <label className="text-sm font-semibold">Password</label>
+          <label className="block text-sm font-semibold mb-1">Password</label>
           <input
             type="password"
             {...register("password")}
             placeholder="Enter your password"
-            className="input mt-1"
+            className="input"
           />
           <p className="error">{errors.password?.message}</p>
         </div>
 
-        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+        {/* Role */}
+        <div>
+          <label className="block text-sm font-semibold mb-1">Login As</label>
+          <select className="input">
+            <option>User</option>
+            <option>Seller</option>
+          </select>
+        </div>
+
+        {/* Button */}
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-6 py-2 rounded text-sm"
+        >
           Login
         </button>
       </form>
 
-      <p className="text-sm mt-6">
+      {/* Bottom text */}
+      <p className="text-sm italic mt-8">
         Don’t have an account?{" "}
-        <Link href="/signup" className="underline">
-          Create one
+        <Link href="/signup" className="font-semibold not-italic">
+          Create one.
         </Link>
       </p>
     </>

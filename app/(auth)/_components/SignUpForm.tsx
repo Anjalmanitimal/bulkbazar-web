@@ -20,47 +20,56 @@ export default function SignUpForm() {
 
   return (
     <>
-      <h1 className="text-3xl font-black text-center mb-8">WELCOME</h1>
+      <h1 className="text-4xl font-black text-center mb-10">WELCOME</h1>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div>
-          <label className="text-sm font-semibold">Name</label>
-          <input {...register("name")} className="input mt-1" />
+          <label className="block text-sm font-semibold mb-1">Name</label>
+          <input
+            {...register("name")}
+            placeholder="Enter your name"
+            className="input"
+          />
           <p className="error">{errors.name?.message}</p>
         </div>
 
         <div>
-          <label className="text-sm font-semibold">Email</label>
-          <input {...register("email")} className="input mt-1" />
+          <label className="block text-sm font-semibold mb-1">Email</label>
+          <input
+            {...register("email")}
+            placeholder="Enter your email"
+            className="input"
+          />
           <p className="error">{errors.email?.message}</p>
         </div>
 
         <div>
-          <label className="text-sm font-semibold">Password</label>
+          <label className="block text-sm font-semibold mb-1">Password</label>
           <input
             type="password"
             {...register("password")}
-            className="input mt-1"
+            placeholder="Enter your password"
+            className="input"
           />
           <p className="error">{errors.password?.message}</p>
         </div>
 
         <div>
-          <label className="text-sm font-semibold">SignUp As</label>
-          <select className="input mt-1">
+          <label className="block text-sm font-semibold mb-1">SignUp As</label>
+          <select className="input">
             <option>User</option>
             <option>Seller</option>
           </select>
         </div>
 
-        <button className="bg-blue-600 text-white px-6 py-2 rounded">
+        <button className="bg-blue-600 text-white px-6 py-2 rounded text-sm">
           Register
         </button>
       </form>
 
-      <p className="text-sm mt-6">
+      <p className="text-sm italic mt-8">
         Already have an account?{" "}
-        <Link href="/login" className="underline">
+        <Link href="/login" className="font-semibold not-italic">
           Login
         </Link>
       </p>
