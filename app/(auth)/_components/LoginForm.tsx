@@ -70,7 +70,7 @@ export default function LoginForm() {
 
       {/* Bottom text */}
       <p className="text-sm italic mt-8">
-        Don’t have an account?{" "}
+        Dont have an account?{" "}
         <Link href="/signup" className="font-semibold not-italic">
           Create one.
         </Link>

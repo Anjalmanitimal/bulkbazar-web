@@ -20,7 +20,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       <main className="flex items-center justify-center min-h-[calc(100vh-56px)]">
         <div className="flex w-[1200px]">
           {/* Form */}
-          <div className="w-1/2 bg-blue-300 px-16 py-14 rounded-sm">
+          <div className="w-[450px] bg-blue-300 p-10 rounded-xl flex flex-col justify-center">
             {children}
           </div>
 
