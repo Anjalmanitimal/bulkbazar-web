@@ -24,7 +24,11 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
 
           {/* Right Logo */}
           <div className="w-1/2 flex items-center justify-center">
-            <img src="/file.svg" alt="BulkBazar Logo" className="w-[350px]" />
+            <img
+              src="/bulkbazarlogo.png"
+              alt="BulkBazar Logo"
+              className="w-[350px]"
+            />
           </div>
         </div>
       </main>
