@@ -5,6 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, LoginData } from "../schema";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { login } from "@/lib/api/auth";
+import { setAuthToken, setUserData } from "@/lib/cookie";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -12,14 +14,24 @@ export default function LoginForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = (data: LoginData) => {
-    console.log(data);
-    router.push("/auth/dashboard");
+  const onSubmit = async (data: LoginData) => {
+    try {
+      const res = await login(data);
+
+      console.log("LOGIN RESPONSE:", res);
+
+      await setAuthToken(res.token);
+      await setUserData(res.user);
+
+      router.push("/auth/dashboard");
+    } catch (error: any) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -53,26 +65,27 @@ export default function LoginForm() {
         {/* Role */}
         <div>
           <label className="block text-sm font-semibold mb-1">Login As</label>
-          <select className="input">
-            <option>User</option>
-            <option>Seller</option>
+          <select {...register("role")} className="input">
+            <option value="customer">Customer</option>
+            <option value="seller">Seller</option>
           </select>
+          <p className="error">{errors.role?.message}</p>
         </div>
 
-        {/* Button */}
+        {/* Submit */}
         <button
           type="submit"
-          className="bg-blue-600 text-white px-6 py-2 rounded text-sm"
+          disabled={isSubmitting}
+          className="bg-blue-600 text-white px-6 py-2 rounded text-sm w-full"
         >
-          Login
+          {isSubmitting ? "Logging in..." : "Login"}
         </button>
       </form>
 
-      {/* Bottom text */}
-      <p className="text-sm italic mt-8">
-        Dont have an account?{" "}
+      <p className="text-sm italic mt-8 text-center">
+        Don’t have an account?{" "}
         <Link href="/signup" className="font-semibold not-italic">
-          Create one.
+          Create one
         </Link>
       </p>
     </>
