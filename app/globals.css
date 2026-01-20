@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ===============================
-   GLOBAL RESET
-================================ */
+
 * {
   box-sizing: border-box;
 }
@@ -15,9 +13,7 @@ body {
   margin: 0;
 }
 
-/* ===============================
-   CUSTOM COMPONENT STYLES
-================================ */
+
 @layer components {
   .input {
     @apply w-full h-[52px] px-5 rounded-lg bg-white text-[15px] outline-none;
