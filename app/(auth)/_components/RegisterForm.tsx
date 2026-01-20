@@ -2,19 +2,19 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signupSchema, SignupSchemaType } from "../schema";
+import { registerSchema, RegisterData } from "../schema";
 import Link from "next/link";
 
-export default function SignUpForm() {
+export default function RegisterForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignupSchemaType>({
-    resolver: zodResolver(signupSchema),
+  } = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const onSubmit = (data: SignupSchemaType) => {
+  const onSubmit = (data: RegisterData) => {
     console.log(data);
   };
 
