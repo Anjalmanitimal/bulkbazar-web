@@ -23,12 +23,14 @@ export default function LoginForm() {
     try {
       const res = await login(data);
 
-      console.log("LOGIN RESPONSE:", res);
-
       await setAuthToken(res.token);
       await setUserData(res.user);
 
-      router.push("/auth/dashboard");
+      if (res.user.role === "admin") {
+        router.push("/admin/users");
+      } else {
+        router.push("/user/profile");
+      }
     } catch (error: any) {
       alert(error.message);
     }
