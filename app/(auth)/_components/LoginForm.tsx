@@ -23,10 +23,13 @@ export default function LoginForm() {
     try {
       const res = await login(data);
 
-      await setAuthToken(res.token);
-      await setUserData(res.user);
+      console.log("LOGIN RESPONSE:", res);
 
-      if (res.user.role === "admin") {
+      await setAuthToken(res.token);
+      await setUserData(res.data); // ✅ FIXED
+
+      // 🔁 Redirect based on role
+      if (res.data.role === "admin") {
         router.push("/admin/users");
       } else {
         router.push("/user/profile");

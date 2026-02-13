@@ -1,26 +1,15 @@
-import axios from "axios";
-import { getAuthToken } from "@/lib/cookie";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
+import axios from "./axios";
 
 export const getAdminUsers = async () => {
-  const token = await getAuthToken();
+  const res = await axios.get("/api/admin/users");
 
-  const res = await axios.get(`${API_URL}/api/admin/users`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  // BACKEND RESPONSE:
+  // { success: true, data: [...] }
 
-  return res.data;
+  return res.data.data; // ✅ ARRAY ONLY
 };
 
 export const deleteAdminUser = async (id: string) => {
-  const token = await getAuthToken();
-
-  await axios.delete(`${API_URL}/api/admin/users/${id}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await axios.delete(`/api/admin/users/${id}`);
+  return res.data;
 };
