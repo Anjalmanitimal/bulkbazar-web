@@ -13,3 +13,8 @@ export const deleteAdminUser = async (id: string) => {
   const res = await axios.delete(`/api/admin/users/${id}`);
   return res.data;
 };
+
+export const createAdminUser = async (data: any) => {
+  const res = await axios.post("/api/admin/users", data);
+  return res.data;
+};
