@@ -26,8 +26,20 @@ export const login = async (loginData: LoginData) => {
 
 export const getUser = () => {
   if (typeof window === "undefined") return null;
+
   const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+
+  // fix: handle invalid values safely
+  if (!user || user === "undefined" || user === "null") {
+    return null;
+  }
+
+  try {
+    return JSON.parse(user);
+  } catch (error) {
+    console.error("Invalid user in localStorage:", user);
+    return null;
+  }
 };
 
 export const isLoggedIn = () => {
