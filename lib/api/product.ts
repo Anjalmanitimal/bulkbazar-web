@@ -1,19 +1,28 @@
-import axios from "axios";
+import axios from "./axios";
 
-const API_URL = "http://localhost:4000/api/products";
+export interface PricingTier {
+  moq: number;
+  price: number;
+}
 
-export const getAllProducts = async () => {
+export interface Product {
+  _id: string;
+  name: string;
+  description: string;
+  image: string;
+  pricing: PricingTier[];
+  sellerId: string;
+}
+
+export const getProducts = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const res = await axios.get("/api/products");
 
-    const res = await axios.get(API_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    console.log("PRODUCT API RESPONSE:", res.data);
 
-    return res.data.data; // adjust if needed
+    return res.data.data; // IMPORTANT
   } catch (error: any) {
-    throw error.response?.data || error;
+    console.error("PRODUCT API ERROR:", error.response?.data || error.message);
+    throw new Error("Failed to load products");
   }
 };

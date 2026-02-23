@@ -26,13 +26,15 @@ export default function LoginForm() {
       console.log("LOGIN RESPONSE:", res);
 
       await setAuthToken(res.token);
-      await setUserData(res.data); // ✅ FIXED
+      await setUserData(res.data);
 
-      // 🔁 Redirect based on role
+      // ✅ Role based redirect
       if (res.data.role === "admin") {
         router.push("/admin/users");
+      } else if (res.data.role === "seller") {
+        router.push("/seller/dashboard");
       } else {
-        router.push("/user/profile");
+        router.push("/dashboard");
       }
     } catch (error: any) {
       alert(error.message);
