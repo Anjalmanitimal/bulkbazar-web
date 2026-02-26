@@ -16,6 +16,20 @@ export const register = async (registerData: RegisterData) => {
 export const login = async (loginData: LoginData) => {
   try {
     const response = await axios.post(API.AUTH.LOGIN, loginData);
+
+    const token = response.data.token; // ✅ correct
+    const user = response.data.data; // ✅ correct
+
+    console.log("SAVING TOKEN:", token);
+
+    if (!token) {
+      throw new Error("Token not received from server");
+    }
+
+    // ✅ Save correctly
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+
     return response.data;
   } catch (error: Error | any) {
     throw new Error(
