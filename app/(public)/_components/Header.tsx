@@ -40,6 +40,10 @@ export default function Header() {
             </span>
           )}
         </Link>
+
+        <Link href="/profile" className="hover:text-blue-600 font-medium">
+          Profile
+        </Link>
       </div>
     </header>
   );
