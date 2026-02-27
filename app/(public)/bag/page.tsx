@@ -7,6 +7,8 @@ import {
   removeFromCart,
   getPriceForQuantity,
 } from "@/lib/api/cart";
+import { createOrderAPI } from "@/lib/api/order";
+import { clearCart } from "@/lib/api/cart";
 
 export default function BagPage() {
   const [cart, setCart] = useState<any[]>([]);
@@ -32,6 +34,32 @@ export default function BagPage() {
   const handleRemove = (id: string) => {
     removeFromCart(id);
     refresh();
+  };
+  const handleCheckout = async () => {
+    try {
+      const orderItems = cart.map((item) => ({
+        productId: item._id,
+        name: item.name,
+        image: item.image,
+        quantity: item.quantity,
+        price: getPriceForQuantity(item.pricing, item.quantity),
+      }));
+
+      const total = orderItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0,
+      );
+
+      await createOrderAPI(orderItems, total);
+
+      clearCart();
+      setCart([]);
+
+      alert("Order placed successfully 🎉");
+    } catch (error) {
+      console.error(error);
+      alert("Checkout failed");
+    }
   };
 
   const total = cart.reduce((sum, item) => {
@@ -99,6 +127,14 @@ export default function BagPage() {
 
       <div className="mt-8 text-right">
         <h2 className="text-2xl font-bold">Total: Rs. {total}</h2>
+      </div>
+      <div className="mt-6">
+        <button
+          onClick={handleCheckout}
+          className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold"
+        >
+          Checkout
+        </button>
       </div>
     </div>
   );
