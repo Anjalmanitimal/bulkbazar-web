@@ -8,4 +8,8 @@ export const API = {
   ADMIN: {
     USERS: "/api/admin/users",
   },
+
+  PRODUCTS: {
+    GET_ALL: "/api/products",
+  },
 };

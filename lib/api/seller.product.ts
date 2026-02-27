@@ -23,17 +23,14 @@ export const createSellerProduct = async (formData: FormData) => {
   return res.data;
 };
 
-// ✅ Get Seller Products (if you add backend route later)
+// ✅ Get ALL products (temporary until seller route added)
 export const getSellerProducts = async () => {
-  const res = await axios.get(
-    `${API_URL}/api/products/seller`,
-    getAuthHeaders(),
-  );
+  const res = await axios.get(`${API_URL}/api/products`, getAuthHeaders());
 
   return res.data;
 };
 
-// ✅ Delete Product
+// ✅ Delete
 export const deleteSellerProduct = async (id: string) => {
   const res = await axios.delete(
     `${API_URL}/api/products/${id}`,
