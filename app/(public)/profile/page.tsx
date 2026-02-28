@@ -75,22 +75,49 @@ export default function ProfilePage() {
         {orders.length === 0 ? (
           <p>No orders yet</p>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {orders.map((order) => (
-              <div
-                key={order._id}
-                className="border rounded-lg p-4 flex justify-between"
-              >
-                <div>
-                  <p className="font-semibold">Order ID: {order._id}</p>
+              <div key={order._id} className="border rounded-xl p-5 space-y-4">
+                {/* Order header */}
+                <div className="flex justify-between items-center">
+                  <div>
+                    <p className="font-semibold">Order ID: {order._id}</p>
 
-                  <p className="text-gray-500 text-sm">
-                    {new Date(order.createdAt).toLocaleString()}
-                  </p>
+                    <p className="text-gray-500 text-sm">
+                      {new Date(order.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+
+                  <div className="font-bold text-green-600 text-lg">
+                    Rs. {Number(order.totalAmount || 0).toLocaleString()}
+                  </div>
                 </div>
 
-                <div className="font-bold text-blue-600">
-                  Rs. {order.totalAmount}
+                {/* Ordered items */}
+                <div className="space-y-3">
+                  {order.items?.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg"
+                    >
+                      <img
+                        src={`${process.env.NEXT_PUBLIC_API_URL}${item.image}`}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+
+                      <div className="flex-1">
+                        <p className="font-medium">{item.name}</p>
+
+                        <p className="text-sm text-gray-500">
+                          Quantity: {item.quantity}
+                        </p>
+                      </div>
+
+                      <div className="font-semibold text-blue-600">
+                        Rs. {Number(item.price).toLocaleString()}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             ))}
