@@ -8,54 +8,73 @@ export default function ProductsTable({ products, refresh }: any) {
     if (!confirm("Delete this product?")) return;
 
     await deleteSellerProduct(id);
-
     refresh();
   };
 
   return (
-    <div className="bg-white shadow rounded">
+    <div className="overflow-x-auto">
       <table className="w-full">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-3 text-left">Image</th>
-            <th>Name</th>
+        <thead>
+          <tr className="text-left text-gray-500 border-b">
+            <th className="pb-3">Product</th>
+
             <th>Description</th>
-            <th>Actions</th>
+
+            <th className="text-right">Actions</th>
           </tr>
         </thead>
 
         <tbody>
-          {Array.isArray(products) &&
-            products.map((product: any) => (
-              <tr key={product._id} className="border-t">
-                <td className="p-2">
+          {products?.map((product: any) => (
+            <tr
+              key={product._id}
+              className="border-b hover:bg-gray-50 transition"
+            >
+              {/* PRODUCT */}
+              <td className="py-4">
+                <div className="flex items-center gap-4">
                   <img
                     src={`${process.env.NEXT_PUBLIC_API_URL}${product.image}`}
-                    className="w-14 h-14 object-cover rounded"
+                    className="w-14 h-14 rounded-lg object-cover border"
                   />
-                </td>
 
-                <td>{product.name}</td>
+                  <div>
+                    <p className="font-semibold text-gray-800">
+                      {product.name}
+                    </p>
 
-                <td>{product.description}</td>
+                    <p className="text-sm text-gray-500">
+                      ID: {product._id.slice(-6)}
+                    </p>
+                  </div>
+                </div>
+              </td>
 
-                <td className="space-x-2">
+              {/* DESCRIPTION */}
+              <td className="text-gray-600 max-w-sm truncate">
+                {product.description}
+              </td>
+
+              {/* ACTIONS */}
+              <td className="text-right">
+                <div className="flex justify-end gap-2">
                   <Link
                     href={`/seller/products/edit/${product._id}`}
-                    className="bg-yellow-500 text-white px-3 py-1 rounded"
+                    className="px-4 py-1.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
                   >
                     Edit
                   </Link>
 
                   <button
                     onClick={() => handleDelete(product._id)}
-                    className="bg-red-600 text-white px-3 py-1 rounded"
+                    className="px-4 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition"
                   >
                     Delete
                   </button>
-                </td>
-              </tr>
-            ))}
+                </div>
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

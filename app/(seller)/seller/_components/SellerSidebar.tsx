@@ -13,23 +13,31 @@ export default function SellerSidebar() {
   ];
 
   return (
-    <div className="w-64 bg-white shadow-lg h-screen p-6">
-      <h2 className="text-2xl font-bold mb-8 text-blue-600">Seller Panel</h2>
+    <div className="w-64 bg-white border-r min-h-screen p-6">
+      {/* LOGO */}
+      <h1 className="text-2xl font-bold text-blue-600 mb-10">
+        BulkBazar Seller
+      </h1>
 
-      <nav className="space-y-3">
-        {menu.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`block px-4 py-2 rounded-lg transition ${
-              pathname === item.href
-                ? "bg-blue-600 text-white"
-                : "hover:bg-gray-100"
-            }`}
-          >
-            {item.name}
-          </Link>
-        ))}
+      {/* MENU */}
+      <nav className="space-y-2">
+        {menu.map((item) => {
+          const active = pathname === item.href;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`block px-4 py-3 rounded-xl font-medium transition ${
+                active
+                  ? "bg-blue-600 text-white shadow"
+                  : "text-gray-600 hover:bg-blue-50 hover:text-blue-600"
+              }`}
+            >
+              {item.name}
+            </Link>
+          );
+        })}
       </nav>
     </div>
   );

@@ -22,25 +22,65 @@ export default function SellerDashboardPage() {
   }, []);
 
   return (
-    <div className="p-6">
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
+    <div className="space-y-6">
+      {/* HEADER */}
+      <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border">
         <div>
-          <h1 className="text-2xl font-bold">Seller Dashboard</h1>
+          <h1 className="text-3xl font-bold text-gray-800">Seller Dashboard</h1>
 
-          <p className="text-gray-500">Manage your products</p>
+          <p className="text-gray-500 mt-1">
+            Manage your products and grow your business
+          </p>
         </div>
 
         <Link
           href="/seller/products/add"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl shadow hover:shadow-lg transition font-medium"
         >
-          Add Product
+          + Add Product
         </Link>
       </div>
 
-      {/* Table */}
-      <ProductsTable products={products} refresh={fetchProducts} />
+      {/* STATS */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition">
+          <p className="text-gray-500 text-sm">Total Products</p>
+
+          <h2 className="text-3xl font-bold text-blue-600 mt-2">
+            {products.length}
+          </h2>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition">
+          <p className="text-gray-500 text-sm">Active Products</p>
+
+          <h2 className="text-3xl font-bold text-green-600 mt-2">
+            {products.length}
+          </h2>
+        </div>
+
+        <div className="bg-white p-6 rounded-2xl shadow-sm border hover:shadow-md transition">
+          <p className="text-gray-500 text-sm">Account Status</p>
+
+          <h2 className="text-xl font-bold text-blue-600 mt-2">Active</h2>
+        </div>
+      </div>
+
+      {/* TABLE SECTION */}
+      <div className="bg-white p-6 rounded-2xl shadow-sm border">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-800">Your Products</h2>
+
+          <Link
+            href="/seller/products"
+            className="text-blue-600 font-medium hover:underline"
+          >
+            View All
+          </Link>
+        </div>
+
+        <ProductsTable products={products} refresh={fetchProducts} />
+      </div>
     </div>
   );
 }
