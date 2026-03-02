@@ -1,10 +1,10 @@
-import axios from "axios";
+import Axios from "axios";
 
-const instance = axios.create({
-  baseURL: "http://localhost:4000", // 🔥 BACKEND URL
+const axios = Axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
 });
 
-instance.interceptors.request.use((config) => {
+axios.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("token");
 
@@ -12,7 +12,8 @@ instance.interceptors.request.use((config) => {
       config.headers.Authorization = `Bearer ${token}`;
     }
   }
+
   return config;
 });
 
-export default instance;
+export default axios;
