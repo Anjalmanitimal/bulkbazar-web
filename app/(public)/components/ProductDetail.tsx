@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "@/lib/api/axios";
 import RecommendedProducts from "./RecommendedProducts";
+import AddToCartButton from "./AddToCartButton";
 
 export default function ProductDetail({ productId }: { productId: string }) {
   const [product, setProduct] = useState<any>(null);
@@ -60,8 +61,8 @@ export default function ProductDetail({ productId }: { productId: string }) {
 
           {/* ADD TO CART BUTTON */}
           <button
-            className="bg-blue-600 text-white px-8 py-3 rounded-xl hover:bg-blue-700 transition"
-            onClick={() => alert("Add to cart coming in next step")}
+            onClick={AddToCartButton}
+            className="bg-blue-600 text-white px-6 py-2 rounded-lg"
           >
             Add to Cart
           </button>
