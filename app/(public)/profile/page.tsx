@@ -1,13 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   getProfileAPI,
   getMyOrdersAPI,
   deleteOrderAPI,
+  updateProfileAPI,
+  uploadProfileImageAPI,
 } from "@/lib/api/profile";
 
 interface User {
+  _id?: string;
   fullName: string;
   email: string;
   profileImage?: string;
@@ -22,29 +25,56 @@ interface OrderItem {
 
 interface Order {
   _id: string;
-  totalAmount: number;
+  total: number;
   createdAt: string;
   items: OrderItem[];
 }
 
 export default function ProfilePage() {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const [user, setUser] = useState<User | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
+
+  const [editMode, setEditMode] = useState(false);
+
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
     loadProfile();
     loadOrders();
   }, []);
 
+  /* ================= LOAD PROFILE ================= */
+
   const loadProfile = async () => {
     try {
       const data = await getProfileAPI();
-      setUser(data);
+
+      setUser({
+        _id: data._id,
+        fullName: data.fullName,
+        email: data.email,
+        profileImage: data.profileImage,
+      });
+
+      setFullName(data.fullName);
+      setEmail(data.email);
+
+      // save id for update
+      setUser((prev) => ({
+        ...prev,
+        ...data,
+        _id: data._id || data.userId || data.id,
+      }));
     } catch {
       window.location.href = "/login";
     }
   };
+
+  /* ================= LOAD ORDERS ================= */
 
   const loadOrders = async () => {
     try {
@@ -57,143 +87,213 @@ export default function ProfilePage() {
     }
   };
 
+  /* ================= LOGOUT ================= */
+
   const logout = () => {
     localStorage.removeItem("token");
     window.location.href = "/login";
   };
 
+  /* ================= DELETE ORDER ================= */
+
   const handleDeleteOrder = async (orderId: string) => {
-    const confirmDelete = confirm(
-      "Are you sure you want to delete this order?",
-    );
+    if (!confirm("Delete this order?")) return;
 
-    if (!confirmDelete) return;
+    await deleteOrderAPI(orderId);
 
-    try {
-      await deleteOrderAPI(orderId);
-
-      setOrders((prev) => prev.filter((o) => o._id !== orderId));
-
-      alert("Order deleted successfully");
-    } catch {
-      alert("Failed to delete order");
-    }
+    setOrders((prev) => prev.filter((o) => o._id !== orderId));
   };
 
-  if (!user) return <div className="p-10 text-center">Loading profile...</div>;
+  /* ================= IMAGE CLICK ================= */
+
+  const handleImageClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  /* ================= IMAGE UPLOAD ================= */
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.[0]) return;
+
+    const file = e.target.files[0];
+
+    const res = await uploadProfileImageAPI(file);
+
+    setUser((prev) => ({
+      ...prev!,
+      profileImage: res.profileImage,
+    }));
+  };
+
+  /* ================= UPDATE PROFILE ================= */
+
+  const handleUpdateProfile = async () => {
+    if (!user?._id) {
+      alert("User ID missing");
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("fullName", fullName);
+
+    const updated = await updateProfileAPI(user._id, formData);
+
+    setUser(updated);
+
+    setEditMode(false);
+
+    alert("Profile updated");
+  };
+
+  if (!user) return <div className="p-10">Loading...</div>;
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-10">
       {/* PROFILE CARD */}
-      <div className="bg-white shadow-lg rounded-2xl p-6 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <img
-            src={
-              user.profileImage
-                ? `${process.env.NEXT_PUBLIC_API_URL}${user.profileImage}`
-                : "/user.png"
-            }
-            className="w-24 h-24 rounded-full object-cover border-4 border-blue-100"
-          />
+      <div className="bg-white shadow-xl rounded-2xl p-6 flex justify-between">
+        <div className="flex gap-6 items-center">
+          {/* IMAGE */}
+          <div className="relative">
+            <img
+              onClick={handleImageClick}
+              src={
+                user.profileImage
+                  ? `${process.env.NEXT_PUBLIC_API_URL}${user.profileImage}`
+                  : "/user.png"
+              }
+              className="w-28 h-28 rounded-full border-4 border-blue-200 object-cover cursor-pointer hover:opacity-80"
+            />
 
+            <input
+              type="file"
+              hidden
+              ref={fileInputRef}
+              onChange={handleImageChange}
+            />
+          </div>
+
+          {/* INFO */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-800">
-              {user.fullName}
-            </h2>
+            {editMode ? (
+              <>
+                <input
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="border px-3 py-2 rounded w-full mb-2"
+                />
 
-            <p className="text-gray-500">{user.email}</p>
+                <input
+                  value={email}
+                  disabled
+                  className="border px-3 py-2 rounded w-full"
+                />
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold">{user.fullName}</h2>
 
-            <p className="text-sm text-gray-400 mt-1">Welcome to BulkBazar</p>
+                <p className="text-gray-500">{user.email}</p>
+              </>
+            )}
           </div>
         </div>
 
-        <button
-          onClick={logout}
-          className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium"
-        >
-          Logout
-        </button>
+        {/* BUTTONS */}
+        <div className="flex flex-col gap-2">
+          {editMode ? (
+            <>
+              <button
+                onClick={handleUpdateProfile}
+                className="bg-green-500 text-white px-4 py-2 rounded"
+              >
+                Save
+              </button>
+
+              <button
+                onClick={() => setEditMode(false)}
+                className="bg-gray-400 text-white px-4 py-2 rounded"
+              >
+                Cancel
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setEditMode(true)}
+              className="bg-blue-500 text-white px-4 py-2 rounded"
+            >
+              Edit Profile
+            </button>
+          )}
+
+          <button
+            onClick={logout}
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
-      {/* ORDERS SECTION */}
-      <div className="bg-white shadow-lg rounded-2xl p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">My Orders</h2>
+      {/* ORDERS */}
 
-          <span className="text-sm text-gray-500">{orders.length} Orders</span>
-        </div>
+      <div className="bg-white shadow-xl rounded-2xl p-6">
+        <h2 className="text-2xl font-bold mb-4">My Orders</h2>
 
-        {loadingOrders ? (
-          <p>Loading orders...</p>
-        ) : orders.length === 0 ? (
-          <div className="text-center text-gray-500 py-10">No orders yet</div>
-        ) : (
-          <div className="space-y-6">
-            {orders.map((order) => (
-              <div
-                key={order._id}
-                className="border rounded-xl p-5 hover:shadow-md transition"
-              >
-                {/* ORDER HEADER */}
-                <div className="flex justify-between items-start">
+        {loadingOrders
+          ? "Loading..."
+          : orders.map((order) => (
+              <div key={order._id} className="border p-4 rounded mb-4">
+                {/* HEADER */}
+                <div className="flex justify-between mb-4">
                   <div>
-                    <p className="font-semibold text-gray-800">Order ID</p>
-
-                    <p className="text-sm text-gray-500 break-all">
-                      {order._id}
-                    </p>
-
-                    <p className="text-sm text-gray-400 mt-1">
+                    <p className="font-bold">Order ID: {order._id}</p>
+                    <p className="text-sm text-gray-500">
                       {new Date(order.createdAt).toLocaleString()}
                     </p>
                   </div>
 
                   <div className="text-right">
-                    <p className="text-sm text-gray-500">Total Amount</p>
-
-                    <p className="font-bold text-green-600 text-xl">
-                      Rs. {Number(order.totalAmount || 0).toLocaleString()}
+                    <p className="font-bold text-green-600">
+                      Rs. {order.total}
                     </p>
 
                     <button
                       onClick={() => handleDeleteOrder(order._id)}
-                      className="mt-2 text-sm bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                      className="bg-red-500 text-white px-3 py-1 rounded mt-2"
                     >
                       Delete
                     </button>
                   </div>
                 </div>
 
-                {/* ORDER ITEMS */}
-                <div className="mt-5 space-y-3">
-                  {order.items?.map((item, index) => (
+                {/* ITEMS */}
+                <div className="space-y-3">
+                  {order.items.map((item, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-4 bg-gray-50 p-3 rounded-lg"
+                      className="flex gap-4 items-center border-t pt-3"
                     >
                       <img
                         src={`${process.env.NEXT_PUBLIC_API_URL}${item.image}`}
-                        className="w-16 h-16 rounded object-cover"
+                        className="w-16 h-16 object-cover rounded"
                       />
 
                       <div className="flex-1">
-                        <p className="font-medium text-gray-800">{item.name}</p>
-
+                        <p className="font-semibold">{item.name}</p>
                         <p className="text-sm text-gray-500">
-                          Quantity: {item.quantity}
+                          Qty: {item.quantity}
                         </p>
                       </div>
 
-                      <div className="font-semibold text-blue-600">
-                        Rs. {Number(item.price).toLocaleString()}
-                      </div>
+                      <p className="font-bold text-blue-600">
+                        Rs. {item.price}
+                      </p>
                     </div>
                   ))}
                 </div>
               </div>
             ))}
-          </div>
-        )}
       </div>
     </div>
   );
