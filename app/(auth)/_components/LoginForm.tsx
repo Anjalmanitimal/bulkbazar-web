@@ -78,6 +78,14 @@ export default function LoginForm() {
           </select>
           <p className="error">{errors.role?.message}</p>
         </div>
+        <p className="text-sm text-right">
+          <Link
+            href="/forgot-password"
+            className="text-blue-600 hover:underline"
+          >
+            Forgot Password?
+          </Link>
+        </p>
 
         {/* Submit */}
         <button
@@ -91,7 +99,7 @@ export default function LoginForm() {
 
       <p className="text-sm italic mt-8 text-center">
         Don’t have an account?{" "}
-        <Link href="/signup" className="font-semibold not-italic">
+        <Link href="/register" className="font-semibold not-italic">
           Create one
         </Link>
       </p>

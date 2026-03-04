@@ -39,11 +39,11 @@ export default function RegisterForm() {
         <div>
           <label className="block text-sm font-semibold mb-1">Name</label>
           <input
-            {...register("name")}
+            {...register("fullName")}
             placeholder="Enter your name"
             className="input"
           />
-          <p className="error">{errors.name?.message}</p>
+          <p className="error">{errors.fullName?.message}</p>
         </div>
 
         {/* Email */}

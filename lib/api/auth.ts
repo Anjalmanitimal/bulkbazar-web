@@ -38,6 +38,31 @@ export const login = async (loginData: LoginData) => {
   }
 };
 
+export const requestPasswordReset = async (email: string) => {
+  try {
+    const response = await axios.post(API.AUTH.REQUEST_PASSWORD_RESET, {
+      email,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error.response?.data?.message || "Request password reset failed",
+    );
+  }
+};
+
+/* ================= RESET PASSWORD ================= */
+export const resetPassword = async (token: string, password: string) => {
+  try {
+    const response = await axios.post(API.AUTH.RESET_PASSWORD(token), {
+      password,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(error.response?.data?.message || "Reset password failed");
+  }
+};
+
 export const getUser = () => {
   if (typeof window === "undefined") return null;
 
